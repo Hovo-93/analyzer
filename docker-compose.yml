@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: analyzer_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: BlAnterAST
+      POSTGRES_DB: analyzer
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  fastapi_app:
+    build: .
+    container_name: analyzer
+    command: sh -c "uvicorn app.manage:init --host 0.0.0.0 --port 8080"
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - ./analyzer_data:/app/analyzer_data
+    environment:
+      DATABASE_URL: postgres+asyncpg://postgres:BlAnterAST@db:5432/analyzer
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+volumes:
+  postgres_data:

@@ -5,6 +5,7 @@
 git https://github.com/Hovo-93/analyzer.git
 cd your-repo
 ```
+Миграции применяются автоматически
 
 ⚙️ Создай .env файл в app/.env
 ```dotenv
@@ -24,3 +25,9 @@ docker compose up --build
 
 Swagger UI: http://localhost:8000/docs
 
+
+![img.png](img.png)
+
+
+
+Stack: Python,Pydantic,Sqlalchemy,FastAPI
